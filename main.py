@@ -11,7 +11,6 @@ import requests
 import pytz
 from PIL import Image, ImageTk
 from ctypes import windll
-
 windll.shcore.SetProcessDpiAwareness(1)
 
 #CREATING MAIN FRAME NAMED ROOT
@@ -19,16 +18,20 @@ root = Tk()
 root.title("Weather Forecast")
 root.geometry("890x470")
 root.configure(bg="#57adff")
-root.resizable(False, False)
+root.resizable(True, True)
 
 def getWeather():
     city = textfield.get()
-    
+    if len(city)==0:
+        messagebox.showerror("No place entered", "Enter a valid place!")
     geolocator = Nominatim(user_agent="weatherforecast")
     location = geolocator.geocode(city)
     obj = TimezoneFinder()
     
-    result = obj.timezone_at(lng=location.longitude, lat=location.latitude)
+    try:
+        result = obj.timezone_at(lng=location.longitude, lat=location.latitude)
+    except:
+        messagebox.showwarning("Invalid Place", "Enter a valid place name")
 
     timezone.config(text=result)
     long_lat.configure(text=f"{round(location.latitude, 4)}°N,{round(location.longitude, 4)}°E")
